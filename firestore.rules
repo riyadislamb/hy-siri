@@ -1,0 +1,105 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && request.auth.token.email == "exsajibislam11@gmail.com";
+    }
+
+    function isStaff() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/staff/$(request.auth.token.email));
+    }
+
+    function isAdmin() {
+      return isSuperAdmin() || isStaff() ||
+         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /staff/{staffEmail} {
+      allow read: if isSuperAdmin() || (isAuthenticated() && request.auth.token.email == staffEmail);
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && (request.resource.data.role == 'user' || isAdmin());
+      allow update: if isOwner(userId) && (request.resource.data.role == resource.data.role || isAdmin()) || isAdmin();
+      allow delete: if isSuperAdmin(); // Superadmin can delete users
+    }
+
+    match /promoCodes/{promoId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      // Users can read their own orders, admins can read all
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Users can create orders for themselves
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own orders (e.g., to mark items as reviewed), admins can update all
+      allow update: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Only admins can delete orders
+      allow delete: if isAdmin();
+    }
+
+    match /dishes/{dishId} {
+      // Anyone can read dishes
+      allow read: if true;
+      
+      // Admins can create/delete. Authenticated users can update (for reviews/ratings)
+      allow create, delete: if isAdmin();
+      allow update: if isAuthenticated();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      // Anyone can read categories
+      allow read: if true;
+      
+      // Only admins can create, update, or delete categories
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /promotions/{promoId} {
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}
