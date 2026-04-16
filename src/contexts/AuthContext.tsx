@@ -143,7 +143,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
     } catch (error: any) {
-      if (error.code !== 'auth/popup-closed-by-user') {
+      if (error.code === 'auth/unauthorized-domain') {
+        alert("Domain not authorized for Google Sign-In. Please add this URL to your Firebase Console > Authentication > Settings > Authorized Domains.");
+      } else if (error.code !== 'auth/popup-closed-by-user') {
         console.error("Error signing in with Google", error);
       }
       throw error;
