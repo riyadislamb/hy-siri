@@ -229,13 +229,13 @@ export default function Home() {
   return (
     <div className="bg-surface font-body text-on-surface min-h-screen pb-32 md:pb-12">
       {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 bg-orange-50/80 dark:bg-stone-900/80 backdrop-blur-md border-b border-outline-variant/10">
+      <header className="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm transition-all duration-300">
         <div className="flex justify-between items-center px-6 md:px-8 h-16 md:h-20 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm">
-              <span className="material-symbols-outlined text-white text-xl">storefront</span>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-dim rounded-xl flex items-center justify-center shadow-md">
+              <span className="material-symbols-outlined text-white text-2xl">eco</span>
             </div>
-            <h1 className="font-headline font-extrabold text-lg md:text-xl tracking-tight text-primary flex-shrink-0">SalesHub Enterprise</h1>
+            <h1 className="font-headline font-extrabold text-xl md:text-2xl tracking-tight text-primary flex-shrink-0">SalesHub</h1>
           </div>
           
           {/* Desktop Navigation */}
@@ -244,22 +244,22 @@ export default function Home() {
             <Link to="/orders" className="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm">Orders</Link>
             <Link to="/favorites" className="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm">Favorites</Link>
             <Link to="/reviews" className="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm">Reviews</Link>
-            <Link to="/cart" className="text-on-surface-variant hover:text-primary transition-colors font-medium flex items-center gap-1 text-sm">
+            <Link to="/cart" className="text-on-surface-variant hover:text-primary transition-colors font-medium flex items-center gap-1.5 text-sm">
               Cart
               {cartItemCount > 0 && (
-                <span className="bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full">{cartItemCount}</span>
+                <span className="bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">{cartItemCount}</span>
               )}
             </Link>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {!user ? (
               <div className="hidden md:flex items-center gap-3">
-                <button onClick={() => navigate('/login')} className="text-xs font-semibold text-[#595c5b] hover:text-[#176a21] transition-all">Log In</button>
-                <button onClick={() => navigate('/login', { state: { isSignup: true } })} className="text-xs font-semibold text-[#176a21] bg-[#9df197]/30 px-4 py-1.5 rounded-full hover:bg-[#9df197]/50 transition-all">Sign Up</button>
+                <button onClick={() => navigate('/login')} className="text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">Log In</button>
+                <button onClick={() => navigate('/login', { state: { isSignup: true } })} className="text-sm font-semibold text-on-primary bg-primary px-5 py-2 rounded-full hover:bg-primary-dim shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">Sign Up</button>
               </div>
             ) : null}
-            <Link to="/profile" className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-primary-container active:scale-95 duration-200 flex items-center justify-center bg-surface-container hover:border-primary transition-colors">
+            <Link to="/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container active:scale-95 duration-200 flex items-center justify-center bg-surface-container hover:border-primary transition-colors shadow-sm">
               {user?.photoURL ? (
                 <img alt="User Profile" src={user.photoURL} className="w-full h-full object-cover" />
               ) : (
@@ -468,49 +468,51 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                 {visibleDisplayItems.map(item => (
-                  <Link key={item.uniqueId} to={`/dish/${item.id}`} className="bg-surface-container-lowest rounded-2xl md:rounded-3xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/20 relative h-[240px] md:h-[280px]">
-                    <div className="relative h-[160px] md:h-[186px] overflow-hidden flex-shrink-0">
-                      <img alt={item.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src={item.images?.[0] || 'https://placehold.co/400x300?text=No+Image'} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <Link key={item.uniqueId} to={`/dish/${item.id}`} className="bg-surface-container-lowest rounded-3xl overflow-hidden flex flex-col shadow-sm hover:shadow-2xl transition-all duration-500 group border border-outline-variant/30 relative h-[260px] md:h-[300px] transform hover:-translate-y-1">
+                    <div className="relative h-[160px] md:h-[186px] overflow-hidden flex-shrink-0 bg-surface-container">
+                      <img alt={item.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src={item.images?.[0] || 'https://placehold.co/400x300?text=No+Image'} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       
                       {item.points > 0 && (
-                        <div className="absolute bottom-1 right-1 md:bottom-1.5 md:right-1.5 bg-green-100/95 backdrop-blur-md px-1 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm border border-green-200">
-                          <span className="material-symbols-outlined text-[8px] md:text-[10px] text-green-700" style={{ fontSize: '8px' }}>stars</span>
-                          <span className="text-[8px] md:text-[10px] font-bold text-green-800">+{item.points}</span>
+                        <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-md border border-white/20">
+                          <span className="material-symbols-outlined text-[12px] md:text-[14px] text-orange-500" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
+                          <span className="text-[10px] md:text-xs font-bold text-orange-700">+{item.points} pts</span>
                         </div>
                       )}
                       {item.stock === 0 && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
-                          <span className="bg-error text-on-error text-[10px] font-bold px-2 py-1 rounded-md shadow-lg">Out of Stock</span>
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-sm">
+                          <span className="bg-error text-on-error text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl">Out of Stock</span>
                         </div>
                       )}
                     </div>
                     
-                    <div className="p-2 flex flex-col flex-1 bg-surface-container-lowest relative justify-between">
-                      <h4 className="font-headline font-extrabold text-[11px] md:text-xs text-on-surface leading-tight line-clamp-1">{item.name}</h4>
-                      
-                      <div className="flex items-center justify-between mt-1">
-                        <span className="font-headline font-black text-xs md:text-sm text-primary">${item.price.toFixed(2)}</span>
-                        {item.calories && (
-                          <span className="text-[7px] md:text-[8px] font-medium text-on-surface-variant bg-surface-container px-1 py-0.5 rounded-md">{item.calories}</span>
+                    <div className="p-3 md:p-4 flex flex-col flex-1 bg-surface-container-lowest relative justify-between z-10">
+                      <div>
+                        <h4 className="font-headline font-bold text-sm md:text-base text-on-surface leading-tight line-clamp-1 group-hover:text-primary transition-colors">{item.name}</h4>
+                        {item.category && (
+                          <p className="text-[10px] md:text-xs text-on-surface-variant mt-1 uppercase tracking-wider font-semibold">{Array.isArray(item.category) ? item.category[0] : item.category}</p>
                         )}
                       </div>
                       
-                      <button 
-                        className={`w-full py-1.5 mt-1.5 rounded-lg text-[10px] md:text-[11px] font-bold transition-colors flex items-center justify-center gap-1 ${item.stock === 0 ? 'bg-surface-container-high text-on-surface-variant cursor-not-allowed' : 'bg-primary text-on-primary hover:bg-primary/90'}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (item.stock !== 0) {
-                            addToCart({ ...item, image: item.images?.[0] || '', quantity: 1, points: item.points || 0 });
-                          }
-                        }}
-                        disabled={item.stock === 0}
-                      >
-                        <span className="material-symbols-outlined text-[12px] md:text-[14px]">shopping_cart</span>
-                        Add to Cart
-                      </button>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="font-headline font-black text-base md:text-lg text-primary">${item.price.toFixed(2)}</span>
+                        
+                        <button 
+                          className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${item.stock === 0 ? 'bg-surface-container text-outline cursor-not-allowed' : 'bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary hover:shadow-lg hover:scale-110'}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (item.stock !== 0) {
+                              addToCart({ ...item, image: item.images?.[0] || '', quantity: 1, points: item.points || 0 });
+                            }
+                          }}
+                          disabled={item.stock === 0}
+                          title="Add to Cart"
+                        >
+                          <span className="material-symbols-outlined text-[18px] md:text-[20px]">add_shopping_cart</span>
+                        </button>
+                      </div>
                     </div>
                   </Link>
                 ))}
